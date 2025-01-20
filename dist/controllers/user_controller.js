@@ -17,7 +17,7 @@ class UserController {
                 name: name,
                 token: token,
             };
-            return res.status(200).json({ user });
+            return res.status(200).json({ user: user });
         }
         catch (e) {
             console.error(e);

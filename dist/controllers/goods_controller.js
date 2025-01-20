@@ -9,16 +9,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const goods_models_1 = require("../models/goods_models");
 class GoodsController {
     getGoods(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const list = ['a', 'b', 'c', 'd'];
-            // const {name, pass} = req.body
-            //
-            // if (!name || !pass) {
-            //     return res.status(403).json('Неверный email или password')
-            // }
-            return res.status(200).json({ list });
+            try {
+                return res.status(200).json({ goods: goods_models_1.goodsModels });
+            }
+            catch (e) {
+                console.error(`Error goods`);
+                return res.status(500).json({ message: 'Ошибка при получении данных' });
+            }
         });
     }
 }
