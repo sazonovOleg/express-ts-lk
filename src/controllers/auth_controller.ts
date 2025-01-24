@@ -29,9 +29,11 @@ class AuthController {
 
             isLogin = true
 
-            return res.status(200).json({isLogin})
+            return res.status(200).json({isLogin: isLogin})
         } catch (e) {
+            console.error(`ERROR ---------- ${e}`)
 
+            return res.status(500).json({message: 'Ошибка сервера'})
         }
     }
 
@@ -58,7 +60,26 @@ class AuthController {
 
             return res.json({token})
         } catch (e) {
-            console.error(e)
+            console.error(`ERROR ---------- ${e}`)
+
+            return res.status(500).json({message: 'Ошибка сервера'})
+        }
+    }
+
+    async recoveryPass(req: Request, res: Response) {
+        try {
+            const {name} = req.body
+            const userName: string = localStorage.getItem(loginKey)
+
+            if (userName != name) {
+                return res.status(403).json({message: 'Неверные данные'})
+            }
+
+            return res.json({password: '123456'})
+        } catch (e) {
+            console.error(`ERROR ---------- ${e}`)
+
+            return res.status(500).json({message: 'Ошибка сервера'})
         }
     }
 }

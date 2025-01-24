@@ -1,5 +1,5 @@
 import {UserModelsType} from "../models/user_models";
-import {Response} from "express";
+import {Request, Response} from "express";
 
 const LocalStorage = require('node-localstorage').LocalStorage;
 const localStorage = new LocalStorage('./scratch');
@@ -10,7 +10,7 @@ let user: UserModelsType = {
 }
 
 class UserController {
-    getData(res: Response) {
+    async getData(req: Request, res: Response) {
         const tokenKey: string = 'token_key'
         const loginKey: string = 'login_key'
 
