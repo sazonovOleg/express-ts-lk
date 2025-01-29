@@ -39,6 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importStar(require("express"));
 const router_provider_1 = require("./routes/router_provider");
 const cors_1 = __importDefault(require("cors"));
+const chat_service_1 = require("./services/chat_service");
 const app = (0, express_1.default)();
 const dotenv = require("dotenv");
 class App {
@@ -48,17 +49,21 @@ class App {
         app.use((0, express_1.json)());
         app.use('/api', router_provider_1.routerProvider);
     }
+    constructor() {
+        this.chatService = new chat_service_1.ChatService();
+        this.initConfig();
+    }
     appListenPort() {
-        //const port: string = process.env.PORT || 3020
-        app.listen(3020, () => {
+        app.listen(3020, "127.0.0.1", () => {
             console.log("SERVER START: ---------- PORT ----------", 3020);
         }).on("error", (error) => {
             throw new Error(error.message);
         });
     }
     startApp() {
-        this.initConfig();
         this.appListenPort();
+        this.chatService.startReactWSS();
+        this.chatService.startFlutterWSS();
     }
 }
 const startApp = new App();

@@ -9,3 +9,4 @@ const authMiddleware = require('../middleware/auth_middleware');
 authRouter.get('/auth', authMiddleware, _controller.checkAuth);
 authRouter.post('/login', _controller.login);
 authRouter.post('/registration', _controller.registration);
+authRouter.post('/recoveryPass', _controller.recoveryPass);

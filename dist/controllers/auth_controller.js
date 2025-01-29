@@ -23,7 +23,6 @@ function generateJwt(name, pass) {
 class AuthController {
     login(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            let isLogin = false;
             try {
                 const { name, password } = req.body;
                 const userName = localStorage.getItem(loginKey);
@@ -31,8 +30,7 @@ class AuthController {
                 if (name.toString() != userName && password.toString() != userPass) {
                     return res.status(403).json({ message: 'Неверные данные' });
                 }
-                isLogin = true;
-                return res.status(200).json({ isLogin: isLogin });
+                return res.status(200).json({ isLogin: true });
             }
             catch (e) {
                 console.error(`ERROR ---------- ${e}`);
@@ -58,13 +56,21 @@ class AuthController {
                 localStorage.setItem(tokenKey, token);
                 localStorage.setItem(loginKey, name);
                 localStorage.setItem(passKey, password);
-                return res.json({ token });
+                return res.status(200).json({ token: token });
             }
             catch (e) {
                 console.error(`ERROR ---------- ${e}`);
                 return res.status(500).json({ message: 'Ошибка сервера' });
             }
         });
+    }
+    generatePassword() {
+        const chars = "0abcd1efghi2klmno3jpqrs4tuvw5ABCDEF6KLMN7WXYZ8GHIJOP9xyzQRSTUV";
+        let password = "";
+        for (let i = 0; i < 5; i++) {
+            password += chars.charAt(Math.floor(Math.random() * 6));
+        }
+        return password;
     }
     recoveryPass(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -74,7 +80,8 @@ class AuthController {
                 if (userName != name) {
                     return res.status(403).json({ message: 'Неверные данные' });
                 }
-                return res.json({ password: '123456' });
+                const newPass = this.generatePassword();
+                return res.status(200).json({ password: newPass });
             }
             catch (e) {
                 console.error(`ERROR ---------- ${e}`);

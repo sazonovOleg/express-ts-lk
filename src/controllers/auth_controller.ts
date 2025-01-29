@@ -1,11 +1,13 @@
 import {Request, Response} from "express";
 
+
 const jwt = require('jsonwebtoken')
 const tokenKey: string = 'token_key'
 const loginKey: string = 'login_key'
 const passKey: string = 'pass_key'
 const LocalStorage = require('node-localstorage').LocalStorage;
 const localStorage = new LocalStorage('./scratch');
+
 
 function generateJwt(name: string, pass: string) {
     return jwt.sign({id: name, pass}, process.env.SECRET_KEY, {
@@ -15,8 +17,6 @@ function generateJwt(name: string, pass: string) {
 
 class AuthController {
     async login(req: Request, res: Response) {
-        let isLogin = false
-
         try {
             const {name, password} = req.body
 
@@ -27,9 +27,7 @@ class AuthController {
                 return res.status(403).json({message: 'Неверные данные'})
             }
 
-            isLogin = true
-
-            return res.status(200).json({isLogin: isLogin})
+            return res.status(200).json({isLogin: true})
         } catch (e) {
             console.error(`ERROR ---------- ${e}`)
 
@@ -58,12 +56,23 @@ class AuthController {
             localStorage.setItem(loginKey, name)
             localStorage.setItem(passKey, password)
 
-            return res.json({token})
+            return res.status(200).json({token: token})
         } catch (e) {
             console.error(`ERROR ---------- ${e}`)
 
             return res.status(500).json({message: 'Ошибка сервера'})
         }
+    }
+
+    private generatePassword() {
+        const chars: string = "0abcd1efghi2klmno3jpqrs4tuvw5ABCDEF6KLMN7WXYZ8GHIJOP9xyzQRSTUV";
+        let password = "";
+
+        for (let i = 0; i < 5; i++) {
+            password += chars.charAt(Math.floor(Math.random() * 6));
+        }
+
+        return password;
     }
 
     async recoveryPass(req: Request, res: Response) {
@@ -75,7 +84,9 @@ class AuthController {
                 return res.status(403).json({message: 'Неверные данные'})
             }
 
-            return res.json({password: '123456'})
+            const newPass = this.generatePassword()
+
+            return res.status(200).json({password: newPass})
         } catch (e) {
             console.error(`ERROR ---------- ${e}`)
 

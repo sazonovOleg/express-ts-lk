@@ -1,22 +1,28 @@
-import express, {Request, Response, Express, json} from 'express';
+import express, {Express, json} from 'express';
 import {routerProvider} from "./routes/router_provider";
 import cors from 'cors'
+import {ChatService} from "./services/chat_service";
 
 const app: Express = express()
 const dotenv = require("dotenv");
 
 class App {
-    initConfig() {
+    private chatService: ChatService
+
+    private initConfig() {
         dotenv.config()
         app.use(cors())
         app.use(json())
         app.use('/api', routerProvider)
     }
 
-    appListenPort() {
-        //const port: string = process.env.PORT || 3020
+    constructor() {
+        this.chatService = new ChatService()
+        this.initConfig()
+    }
 
-        app.listen(3020, () => {
+    private appListenPort() {
+        app.listen(3020, "127.0.0.1", () => {
             console.log("SERVER START: ---------- PORT ----------", 3020);
         }).on("error", (error: Error) => {
             throw new Error(error.message);
@@ -24,8 +30,9 @@ class App {
     }
 
     startApp() {
-        this.initConfig()
         this.appListenPort()
+        this.chatService.startReactWSS()
+        this.chatService.startFlutterWSS()
     }
 }
 
